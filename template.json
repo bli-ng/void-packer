@@ -1,0 +1,47 @@
+{
+	"builders": [
+		{
+			"type": "virtualbox-iso",
+			"boot_wait": "10s",
+			"boot_command": [
+				"<enter>"
+			],
+			"guest_additions_mode": "disable",
+			"guest_os_type": "Linux_64",
+			"headless": "true",
+			"http_directory": "http",
+			"iso_url": "https://repo.voidlinux.eu/live/current/void-live-x86_64-20160420.iso",
+			"iso_checksum": "24cd5831c89c32b13ef114110a2c055900029de509fa5d8a5995beff89f12f7c",
+			"iso_checksum_type": "sha256",
+			"ssh_wait_timeout": "1m",
+			"ssh_username": "root",
+			"ssh_password": "voidlinux",
+			"shutdown_command": "poweroff",
+			"vboxmanage": [
+				["modifyvm", "{{.Name}}", "--memory", "2048"],
+				["modifyvm", "{{.Name}}", "--cpus", "1"]
+			]
+		}
+	],
+	"provisioners": [
+	{
+		"type": "file",
+		"source": "scripts/install.sh",
+		"destination": "/root/install.sh"
+	},
+	{
+		"type": "shell",
+		"script": "scripts/bootstrap.sh"
+	}
+	],
+	"post-processors": [
+		{
+			"type": "vagrant",
+			"override": {
+				"virtualbox": {
+					"output": "void-virtualbox.box"
+				}
+			}
+		}
+	]
+}
