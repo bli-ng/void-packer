@@ -39,8 +39,19 @@
 			"type": "vagrant",
 			"override": {
 				"virtualbox": {
-					"output": "void-virtualbox.box"
+					"output": "voidlinux.box"
 				}
+			}
+		},
+		{
+			"type": "atlas",
+			"only": ["virtualbox-iso"],
+			"artifact": "apelabs/voidlinux",
+			"artifact_type": "vagrant.box",
+			"metadata": {
+				"description": "Base Void Linux box used in lab virtual machines",
+				"provider": "virtualbox",
+				"version": "0.0.1"
 			}
 		}
 	]
