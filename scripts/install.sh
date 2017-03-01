@@ -18,16 +18,19 @@ echo ">> Give vagrant passwordless sudo access"
 echo "vagrant ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/vagrant
 chmod 0440 /etc/sudoers.d/vagrant
 
-echo ">> Set root password to vagrant"
-echo "root:vagrant" | chpasswd -c SHA512
+echo ">> Set root password to voidlinux"
+echo "root:voidlinux" | chpasswd -c SHA512
 
 echo ">> Enable critical services"
 ln -s /etc/sv/dhcpcd /etc/runit/runsvdir/default/dhcpcd
 ln -s /etc/sv/sshd /etc/runit/runsvdir/default/sshd
 
-echo ">> Instal Virtualbox Guest Additions"
+echo ">> Install Virtualbox Guest Additions"
 xbps-install -Sy -R http://repo.voidlinux.eu/current virtualbox-ose-guest
 ln -s /etc/sv/vboxservce /etc/runit/runsvdir/default/vboxservice
+
+echo ">> Install Python"
+xbps-install -Sy -R http://repo.voidlinux.eu/current python
 
 echo ">> Set hostname: voidlinux"
 echo "voidlinux" > /etc/hostname
@@ -51,5 +54,8 @@ echo 'hostonly="yes"' >> /etc/dracut.conf
 echo ">> Install grub"
 grub-install /dev/sda
 
+echo ">> Determine kernel version"
+linux_kernel=`xbps-query --regex -Rs '^linux[[:digit:]]\.[-0-9\._]*$' | cut -f2 -d' ' | sort -V | tail -n1`
+
 echo ">> Configure Linux kernel"
-xbps-reconfigure -f linux4.9-4.9.11_1
+xbps-reconfigure -f ${linux_kernel}
